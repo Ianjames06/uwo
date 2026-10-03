@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, Ate Tatii! 💜</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-lavender-light: #f5f0fa;
+      --bg-lavender-stripe: #e2d6f3;
+      --card-bg: #fffdfa;
+      --border-dark: #2c2533;
+      --accent-lavender: #b09cd4;
+      --accent-deep: #745b99;
+      --accent-pink: #efa3c8;
+      --text-main: #342d3d;
+      --text-sub: #6c6377;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Quicksand', sans-serif;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--bg-lavender-light),
+        var(--bg-lavender-light) 26px,
+        var(--bg-lavender-stripe) 26px,
+        var(--bg-lavender-stripe) 52px
+      );
+      padding: 1.2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Floating cute doodles */
+    .bg-deco {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.3rem;
+      opacity: 0.6;
+      animation: float 4s ease-in-out infinite alternate;
+    }
+    @keyframes float {
+      from { transform: translateY(0px) rotate(0deg); }
+      to { transform: translateY(-12px) rotate(10deg); }
+    }
+
+    /* Phone Screen Container */
+    .card-phone {
+      width: 100%;
+      max-width: 385px;
+      min-height: 650px;
+      background: var(--card-bg);
+      border: 3.5px solid var(--border-dark);
+      border-radius: 42px;
+      box-shadow: 0 16px 36px rgba(103, 80, 138, 0.25);
+      padding: 2rem 1.6rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top Badge */
+    .top-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: 'Gaegu', cursive;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent-deep);
+      margin-bottom: 0.6rem;
+    }
+
+    /* Slide Pages */
+    .slide-page {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      flex: 1;
+      justify-content: center;
+    }
+
+    .slide-page.active {
+      display: flex;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.92); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Main Photo Frame */
+    .photo-frame {
+      width: 100%;
+      max-width: 250px;
+      height: 255px;
+      border: 3px solid var(--border-dark);
+      border-radius: 26px;
+      background: #faf7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin: 0.8rem auto 1.2rem;
+      box-shadow: 4px 4px 0px var(--border-dark);
+      position: relative;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* Two Mini Gallery Photos Grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+      margin: 0.8rem 0 1.2rem;
+    }
+
+    .gallery-item {
+      position: relative;
+    }
+
+    .mini-frame {
+      width: 100%;
+      aspect-ratio: 1 / 1.1;
+      border: 2.5px solid var(--border-dark);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 3px 3px 0px var(--border-dark);
+      background: #f1ecf7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mini-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .view-btn {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      border: 2px solid var(--border-dark);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text-main);
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: 'Quicksand', sans-serif;
+      border-radius: 999px;
+      padding: 0.35rem 0.6rem;
+      box-shadow: 1px 2px 0 var(--border-dark);
+      cursor: pointer;
+    }
+
+    .photo-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 37, 51, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 10000;
+    }
+
+    .photo-modal.active {
+      display: flex;
+    }
+
+    .photo-modal-card {
+      position: relative;
+      max-width: min(92vw, 500px);
+      width: 100%;
+      background: #fffdfa;
+      border: 3px solid var(--border-dark);
+      border-radius: 24px;
+      padding: 0.8rem;
+      box-shadow: 0 18px 40px rgba(44, 37, 51, 0.25);
+    }
+
+    .photo-modal-card img {
+      width: 100%;
+      max-height: 72vh;
+      object-fit: contain;
+      display: block;
+      border-radius: 16px;
+      background: #f6f1ff;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      border: 2px solid var(--border-dark);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--border-dark);
+    }
+
+    /* Text details */
+    .title-main {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+
+    .kaomoji {
+      font-size: 1.15rem;
+      color: var(--accent-deep);
+      margin-bottom: 0.4rem;
+    }
+
+    .caption-text {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+      max-width: 275px;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Letter styling */
+    .letter-box {
+      width: 100%;
+      border: 2px dashed var(--accent-lavender);
+      background: #fbf9ff;
+      border-radius: 20px;
+      padding: 1.2rem 1.1rem;
+      font-size: 0.86rem;
+      color: var(--text-main);
+      line-height: 1.6;
+      text-align: left;
+      margin: 0.6rem 0;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .letter-box p {
+      margin-bottom: 0.6rem;
+    }
+
+    /* Cute Pill Buttons */
+    .btn-pill {
+      background: var(--card-bg);
+      border: 2.5px solid var(--border-dark);
+      color: var(--text-main);
+      padding: 0.7rem 2.2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Quicksand', sans-serif;
+      cursor: pointer;
+      box-shadow: 2px 3px 0px var(--border-dark);
+      transition: all 0.15s ease;
+      margin-top: 0.8rem;
+    }
+
+    .btn-pill:hover {
+      background: var(--bg-lavender-stripe);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 4px 0px var(--border-dark);
+    }
+
+    .btn-pill:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px var(--border-dark);
+    }
+
+    /* Canvas Confetti */
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti"></canvas>
+
+  <!-- Cute Floating Badges -->
+  <div class="bg-deco" style="top: 8%; left: 8%;">🥰</div>
+  <div class="bg-deco" style="top: 16%; right: 10%; animation-delay: 1s;">💜</div>
+  <div class="bg-deco" style="bottom: 12%; left: 8%; animation-delay: 2s;">🎈</div>
+  <div class="bg-deco" style="bottom: 20%; right: 9%; animation-delay: 1.5s;">✨</div>
+
+  <div class="photo-modal" id="photoModal" aria-hidden="true">
+    <div class="photo-modal-card">
+      <button class="close-modal" aria-label="Close photo" onclick="closePhotoModal()">×</button>
+      <img id="modalImage" src="" alt="Large photo preview">
+    </div>
+  </div>
+
+  <div class="card-phone">
+    
+    <!-- Top Date / Title -->
+    <div class="top-badge">
+      <span>🌷</span>
+      <span>Happy Birthday to my pretty ate/beshy!</span>
+      <span>💜</span>
+    </div>
+
+    <!-- PAGE 1: First Picture (Boat / Canal) -->
+    <div class="slide-page active" id="page-1">
+      <div class="photo-frame">
+        <img src="97be173c-591c-4def-b4ad-6b7e7d983c45.jpg" alt="Ate Tatii Boat View">
+      </div>
+      <div class="title-main">HAPPY BIRTHDAY<br>TO MY PRETTY ATE/BESHY</div>
+      <div class="kaomoji">૮ ˶ᵔ ᵕ ᵔ˶ ა</div>
+      <p class="caption-text">a little something for your special day... 🎀</p>
+      <button class="btn-pill" onclick="nextPage(2)">tap &lt;3</button>
+    </div>
+
+    <!-- PAGE 2: Second Picture (Mountain / Greece Flag) -->
+    <div class="slide-page" id="page-2">
+      <div class="photo-frame">
+        <img src="29dea64b-0252-416b-8288-cd514bc444bb.jpg" alt="Ate Tatii Mountain View">
+      </div>
+      <div class="title-main">MAKE A WISH 🎂</div>
+      <p class="caption-text" style="margin-top: 0.3rem;">
+        i hope today brings you lots of little reasons to smile and be happy ♡
+      </p>
+      <button class="btn-pill" onclick="nextPage(3); triggerConfetti();">open it &lt;3</button>
+    </div>
+
+    <!-- PAGE 3: Third Picture ("Atake yan sya dyan" / Outdoor Cafe) -->
+    <div class="slide-page" id="page-3">
+      <div class="photo-frame">
+        <img src="af5a131f-8f8f-4565-b529-b191eafba716.jpg" alt="Atake yan sya dyan">
+      </div>
+      <div class="title-main">Atake yan sya dyan</div>
+      <div class="kaomoji">💅✨</div>
+      <p class="caption-text">
+        the one that always kong ka-chikahan HAHAHA
+      </p>
+      <button class="btn-pill" onclick="nextPage(4)">gallery &lt;3</button>
+    </div>
+
+    <!-- PAGE 4: 6-Photo Mini Gallery -->
+    <div class="slide-page" id="page-4">
+      <div class="title-main" style="font-size: 1.15rem; margin-top: 0.3rem;">MEMORIES TOGETHER 📸</div>
+      <p class="caption-text" style="font-size: 0.85rem; margin-bottom: 0.5rem;">walang tatalo sa bonding natin ♡</p>
+      
+      <div class="gallery-grid">
+        <div class="gallery-item mini-frame">
+          <img src="pic%20together%20ni%20ate%20tatii/828450098_1675646774179911_6903219140490337957_n.jpg" alt="Memory 1">
+          <button class="view-btn" data-image="pic%20together%20ni%20ate%20tatii/828450098_1675646774179911_6903219140490337957_n.jpg">view</button>
+        </div>
+        <div class="gallery-item mini-frame">
+          <img src="pic%20together%20ni%20ate%20tatii/829406185_1724264772012768_8880921770674179594_n.jpg" alt="Memory 2">
+          <button class="view-btn" data-image="pic%20together%20ni%20ate%20tatii/829406185_1724264772012768_8880921770674179594_n.jpg">view</button>
+        </div>
+        <div class="gallery-item mini-frame">
+          <img src="pic%20together%20ni%20ate%20tatii/829451600_1809554510079618_4288582666698912916_n.jpg" alt="Memory 3">
+          <button class="view-btn" data-image="pic%20together%20ni%20ate%20tatii/829451600_1809554510079618_4288582666698912916_n.jpg">view</button>
+        </div>
+        <div class="gallery-item mini-frame">
+          <img src="pic%20together%20ni%20ate%20tatii/830649752_2485842658604085_1799612159933985662_n.jpg" alt="Memory 4">
+          <button class="view-btn" data-image="pic%20together%20ni%20ate%20tatii/830649752_2485842658604085_1799612159933985662_n.jpg">view</button>
+        </div>
+        <div class="gallery-item mini-frame">
+          <img src="pic%20together%20ni%20ate%20tatii/830681125_1116012817593643_3532881165726082067_n.jpg" alt="Memory 5">
+          <button class="view-btn" data-image="pic%20together%20ni%20ate%20tatii/830681125_1116012817593643_3532881165726082067_n.jpg">view</button>
+        </div>
+        <div class="gallery-item mini-frame">
+          <img src="pic%20together%20ni%20ate%20tatii/836833932_940876271994121_1969051183160214819_n.jpg" alt="Memory 6">
+          <button class="view-btn" data-image="pic%20together%20ni%20ate%20tatii/836833932_940876271994121_1969051183160214819_n.jpg">view</button>
+        </div>
+      </div>
+
+      <p class="caption-text" style="font-size: 0.85rem;">ready na for the message?</p>
+      <button class="btn-pill" onclick="nextPage(5); triggerConfetti();">read letter &lt;3</button>
+    </div>
+
+    <!-- PAGE 5: Letter for Ate Tatii -->
+    <div class="slide-page" id="page-5">
+      <div class="title-main" style="font-size: 1.15rem; margin-top: 0.3rem;">💌 a little letter for you</div>
+      <div class="letter-box">
+        <p><strong>Hi Ate,</strong></p>
+        <p>First of all Happy and Blessed Birthday sayoo. Miss na kitaaaa🥹, yung kulitan moments, kwentuhan, tawanan may iyak minsan HAHAHAH kelan kaba kase uuwi? Wala na akong ka chikahan after service ihhh. Anyway, ingat kapo lagi dyan and ingatan ka ng Lord, sa work mo and sa lahat ng gagawin mo dyan always pray lang kapit lang ikaw sa Lord palagi. Although mahirap mapalayo sa family and friends pero, patatatagin ka ng Lord. Don’t worry din po ate, kase always ka din pong nasa prayer koo di ka nawawala.</p>
+        <p>And ayun lang poo ateee miss youu soo much pooo, ingat ka palagiii and Godbless sayooo ingat kapalagi wag mo pabayaan si self okii? Kain ka sa tamang oras and always stay safe lovee lots pooo Happy and Blessed birthday poo ulitt enjoy your dayy poo ^w^. 🤍✨</p>
+      </div>
+      <button class="btn-pill" onclick="nextPage(1); triggerConfetti();">restart &lt;3</button>
+    </div>
+
+  </div>
+
+  <script>
+    function nextPage(pageNumber) {
+      document.querySelectorAll('.slide-page').forEach(page => {
+        page.classList.remove('active');
+      });
+      const target = document.getElementById(`page-${pageNumber}`);
+      if (target) {
+        target.classList.add('active');
+      }
+    }
+
+    const photoModal = document.getElementById('photoModal');
+    const modalImage = document.getElementById('modalImage');
+
+    function openPhotoModal(imageSrc) {
+      modalImage.src = imageSrc;
+      photoModal.classList.add('active');
+      photoModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closePhotoModal() {
+      photoModal.classList.remove('active');
+      photoModal.setAttribute('aria-hidden', 'true');
+    }
+
+    document.querySelectorAll('.view-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        openPhotoModal(this.dataset.image);
+      });
+    });
+
+    photoModal.addEventListener('click', function (event) {
+      if (event.target === photoModal) {
+        closePhotoModal();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && photoModal.classList.contains('active')) {
+        closePhotoModal();
+      }
+    });
+
+    // Soft Lavender & Pastel Confetti
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const confettiColors = ['#b09cd4', '#e2d7f3', '#fbcfe8', '#fef08a', '#ffffff'];
+
+    function triggerConfetti() {
+      for (let i = 0; i < 45; i++) {
+        particles.push({
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.8) * 8,
+          size: Math.random() * 7 + 4,
+          color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+          rot: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 6
+        });
+      }
+      if (!isAnimating) {
+        isAnimating = true;
+        render();
+      }
+    }
+
+    let isAnimating = false;
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.15;
+        p.rot += p.rotSpeed;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+        ctx.restore();
+
+        if (p.y > canvas.height) {
+          particles.splice(i, 1);
+        }
+      }
+
+      if (particles.length > 0) {
+        requestAnimationFrame(render);
+      } else {
+        isAnimating = false;
+      }
+    }
+  </script>
+</body>
+</html>
